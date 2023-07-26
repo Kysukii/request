@@ -16,7 +16,6 @@
   <?php
     include("navbar.php");
   ?>
-  <script>
 
     function formatarNumero(valor) {
       return parseFloat(valor.replace('.', '').replace(',', '.'));
