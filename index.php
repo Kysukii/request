@@ -9,7 +9,7 @@
   </head>
   <body>
   <?php
-    require_once("pages/navbar.php");
+    require_once("navbar.php");
   ?>
 
     <div class="container my-5">

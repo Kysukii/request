@@ -15,9 +15,13 @@
                 Formulario
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="pages/form_payments.php">Ordem Pagamento</a></li>
-                <li><a class="dropdown-item" href="#">Cadastrar Fornecedor</a></li>
+                <li><a class="dropdown-item" href="pages/payments_register.php">Ordem Pagamento</a></li>
+                <li><a class="dropdown-item" href="pages/register_supplier.php">Cadastrar Fornecedor</a></li>
               </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="pages/releases_records.php">Listar Lançamentos</a>
             </li>
             
           </ul>
