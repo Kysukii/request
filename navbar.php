@@ -4,10 +4,12 @@ if ($_SERVER['REQUEST_URI'] == "/request-1/index.php") {
   $home = "index.php";
   $op = "pages/payments_register.php";
   $rs = "pages/register_supplier.php";
+  $lc = "pages/releases_records.php";
 }else {
   $home = "../index.php";
   $op = "payments_register.php";
   $rs = "register_supplier.php";
+  $lc = "releases_records.php";
 }
 
 ?>
@@ -37,12 +39,12 @@ if ($_SERVER['REQUEST_URI'] == "/request-1/index.php") {
                 <li><a class="dropdown-item" href="'.$op.'">Ordem Pagamento</a></li>
                 <li><a class="dropdown-item" href="'.$rs.'">Cadastrar Fornecedor</a></li>
               </ul>
+            </li>
+           
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="'.$lc.'">Listar Lançamentos</a>
             </li>'
             ?>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="pages/releases_records.php">Listar Lançamentos</a>
-            </li>
-            
           </ul>
 
         </div>
