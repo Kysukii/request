@@ -72,14 +72,14 @@ if (isset($json['faultstring'])) {
 
             $entry['categorias'][] = $category_entry; // Adicionamos a categoria ao array 'categorias'
         }
-
+        
         $data[] = $entry; // Adicionamos o lançamento ao array $data
     }
 
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
 }
 
-echo "<br/><hr></br>";
+echo "<br/><hr></br>"; 
 
 function searchSupplier($supplierID) {
     $app_key = '1742976590355';
