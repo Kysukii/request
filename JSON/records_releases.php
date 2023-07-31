@@ -1,11 +1,11 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
+//header('Content-Type: application/json; charset=utf-8');
 $app_key = '1742976590355';
 $app_secret = 'df51a6bbb9a5ee49bf9dafd2365ab707';
 
 
-$date_of = isset($_POST['dataDe']) ? date("d/m/Y", strtotime($_POST['dataDe'])) : date("d/m/Y");
-$date_until = isset($_POST['dataAte']) ? date("d/m/Y", strtotime($_POST['dataAte'])) : date('d/m/Y');
+//$date_of = isset($_POST['dataDe']) ? date("d/m/Y", strtotime($_POST['dataDe'])) : date("d/m/Y");
+//$date_until = isset($_POST['dataAte']) ? date("d/m/Y", strtotime($_POST['dataAte'])) : date('d/m/Y');
 $supplier_id = isset($_POST['supplier_ID']) ? $_POST['supplier_ID'] : null;
 $doc_status = isset($_POST['docStatus']) ? $_POST['docStatus'] : null;
 
@@ -21,8 +21,8 @@ $params = array(
             "apenas_importado_api" => "S",
             "ordem_descrescente" => "S",
             "filtrar_apenas_inclusao" => "S",
-            "filtrar_por_data_de" => $date_of,
-            "filtrar_por_data_ate" => $date_until,
+            //"filtrar_por_data_de" => $date_of,
+            //"filtrar_por_data_ate" => $date_until,
             "filtrar_cliente" => $supplier_id,
             "filtrar_por_status" => $doc_status
         )
