@@ -144,6 +144,7 @@
 
 
 <script> //scripts
+  let fileName;
   $(document).ready(function() {
 
   //DEFINIR DATA NOS INPUTS DE ENTRADA DataDe e DataAte
@@ -167,7 +168,7 @@
 </script>
 
 <script> //Funções JS 
-  function chamaModal(mTitle, nDoc, docNames) {
+  function chamaModal(mTitle, nDoc, [docNames]) {
     var modalElement = document.getElementById('AnexarItem');
     var modalInstance = new bootstrap.Modal(modalElement);
     const modalTitle = document.querySelector('#AnexarItem .modal-title');
@@ -175,11 +176,16 @@
     
     var tabAnexos = $("#tabAnexos").find('tbody');
     tabAnexos.empty();
+    
+    // fileName.forEach(function(anexo) {
+    //   var rowAnexo = $("<tr>");
+    //   rowAnexo.append($("<td>").text(anexo));
+    //   tabAnexos.append(rowAnexo);
+    // });
 
-    var rowAnexo = $("<tr>");
-    rowAnexo.append($("<td>").text(docNames));
-    tabAnexos.append(rowAnexo);
     console.log(docNames);
+    
+   
 
     modalInstance.show();
   }
@@ -266,15 +272,13 @@
                 linha.append($("<td>"));
               }
               
-              let fileName = lancamento['anexos'].map(function(anexo) {
+              fileName = lancamento['anexos'].map(function(anexo) {
                 return anexo['cNomeArquivo'];
-                console.log(anexo['cNomeArquivo']);
-
               });
-
+              
               linha.append(
                 $("<td>").append(
-                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick=\"chamaModal('" + lancamento['id Omie'] + "', '" + lancamento['ndoc'] + "', '" + fileName + "')\"><i class='bi bi-file-earmark-arrow-up'></i></button>")
+                  $(`<button type="button" class="btn btn-secondary btn-sm" title="Inserir Anexo" onclick="chamaModal('${lancamento['id Omie']}', '${lancamento['ndoc']}', ${fileName})"><i class="bi bi-file-earmark-arrow-up"></i></button>`)
                 )
               );
               tabela.append(linha);
