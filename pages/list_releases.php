@@ -65,7 +65,6 @@
               <th scope="col">Razão Social</th>
               <th scope="col">Vencimento</th>
               <th scope="col">Previsão</th>
-              <!--<th>Valor da Categoria</th> -->
               <th scope="col">ID Bitrix</th>
               <th scope="col">N Doc</th>
               <th scope="col">Valor Total</th>
@@ -93,15 +92,42 @@
 
 
     <!-- Modal ANEXAR documento -->
-    <div class="modal fade" id="AnexarItem" tabindex="-1" aria-labelledby="AnexarItemLabel" aria-hidden="true">
+    <div class="modal modal-lg fade" id="AnexarItem" tabindex="-1" aria-labelledby="AnexarItemLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="AnexarItemLabel">Modal title</h1>
+            <h1 class="modal-title fs-5" id="AnexarItemLabel">Anexos do Lançamento</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            ...
+          <div class="modal-body align-middle text-center">
+            
+            <form method="POST" action="" multipart>
+              <legend class="fs-6">Enviar arquivos sem acentuação ou caracteres especiais.</legend>
+              <div class="row">
+                <div class="col-7">
+                  <input class="form-control" type="file" name="insert_anexo"/>
+                </div>
+                <div class="col-3">
+                  <input class="form-control" type="text" name="docNumber" placeholder="Numero NF"/>
+                </div>
+                <div class="col-2">
+                  <button class="btn btn-primary"><i class="bi bi-send"></i> Enviar</button>
+                </div>
+              </div>
+            </form>
+            
+            <div class="col-lg-12 px-0 my-3 table-responsive" id="releases-content">
+              <table id="tabAnexos" class="table table-striped table-hover align-middle text-center">
+                <thead class="text-center">
+                  <tr>
+                    <th>Descrição</th>
+                  </tr> 
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -117,8 +143,7 @@
 </html>
 
 
-<script> //scripts jquery
-
+<script> //scripts
   $(document).ready(function() {
 
   //DEFINIR DATA NOS INPUTS DE ENTRADA DataDe e DataAte
@@ -138,17 +163,34 @@
   $('#search_releases').submit(function(event) {
     event.preventDefault();
     searchReleases();
-    //document.getElementById('search_releases').reset();
   });
 </script>
 
-<script> //scripts js
+<script> //Funções JS 
+  function chamaModal(mTitle, nDoc, docNames) {
+    var modalElement = document.getElementById('AnexarItem');
+    var modalInstance = new bootstrap.Modal(modalElement);
+    const modalTitle = document.querySelector('#AnexarItem .modal-title');
+    modalTitle.textContent = "Lançamento número " + mTitle;
+    
+    var tabAnexos = $("#tabAnexos").find('tbody');
+    tabAnexos.empty();
+
+    var rowAnexo = $("<tr>");
+    rowAnexo.append($("<td>").text(docNames));
+    tabAnexos.append(rowAnexo);
+    console.log(docNames);
+
+    modalInstance.show();
+  }
+  
   function chamaToast(text) {
     const toast = document.querySelector('.toast');
     var toastInstance = new bootstrap.Toast(toast);
     $('.toast-body').html(text);
     toastInstance.show();
   }
+
 
   const supplierInput = document.getElementById('supplierName');
   supplierInput.addEventListener('input', () => {
@@ -189,7 +231,6 @@
     xhr.send(formData); // Envie o objeto FormData como dados da solicitação
   }
 
-
   function searchReleases() {
     var form = document.getElementById("search_releases"); // Obtenha o elemento do formulário pelo ID
     var formData = new FormData(form); // Crie um objeto FormData para enviar o formulário
@@ -204,12 +245,12 @@
             const releases = JSON.parse(responseText); // Parse do JSON retornado para um array de objetos
             //document.getElementById("releases-content").textContent = releases;
             var tabela = $("#tabelaLancamentos").find('tbody');
-
-            // Limpar a tabela antes de inserir os novos dados
             tabela.empty();
-
+            
+            
             // Loop pelos lançamentos
             releases.forEach(function(lancamento) {
+
               var linha = $("<tr>");
               linha.append($("<td>").text(lancamento['Data Inc.']));
               linha.append($("<td>").text(lancamento['status']));
@@ -224,10 +265,21 @@
               }else {
                 linha.append($("<td>"));
               }
-              linha.append($("<td>").append($("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' data-bs-toggle='modal' data-bs-target='#AnexarItem'><i class='bi bi-file-earmark-arrow-up'></i></button>")));
-              // Adicione mais colunas aqui conforme necessário
+              
+              let fileName = lancamento['anexos'].map(function(anexo) {
+                return anexo['cNomeArquivo'];
+                console.log(anexo['cNomeArquivo']);
+
+              });
+
+              linha.append(
+                $("<td>").append(
+                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick=\"chamaModal('" + lancamento['id Omie'] + "', '" + lancamento['ndoc'] + "', '" + fileName + "')\"><i class='bi bi-file-earmark-arrow-up'></i></button>")
+                )
+              );
               tabela.append(linha);
             });
+            
 
           } catch (error) {
             console.error('Erro ao analisar a resposta JSON:', error);

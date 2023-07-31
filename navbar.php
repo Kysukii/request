@@ -4,12 +4,12 @@ if ($_SERVER['REQUEST_URI'] == "/request-1/index.php") {
   $home = "index.php";
   $op = "pages/payments_register.php";
   $rs = "pages/register_supplier.php";
-  $lc = "pages/releases_records.php";
+  $lc = "pages/list_releases.php";
 }else {
   $home = "../index.php";
   $op = "payments_register.php";
   $rs = "register_supplier.php";
-  $lc = "releases_records.php";
+  $lc = "list_releases.php";
 }
 
 ?>

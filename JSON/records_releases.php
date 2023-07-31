@@ -1,5 +1,5 @@
 <?php
-//header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 $app_key = '1742976590355';
 $app_secret = 'df51a6bbb9a5ee49bf9dafd2365ab707';
 
@@ -84,7 +84,7 @@ if (isset($json['faultstring'])) {
         foreach ($Anexo as $cAnexos) {
             $entry['anexos'][] = $cAnexos; // Adicionamos a categoria ao array 'categorias'
         }
-        
+
         $data[] = $entry; // Adicionamos o lançamento ao array $data
     }
 
@@ -189,15 +189,20 @@ function listAnexos($idOmie) {
 
     $json = json_decode($response, true);
     curl_close($ch);
+
+    $anexo = array();
     foreach ($json['listaAnexos'] as $anexos) {
-        $anexos_entry = array(
-            'cNomeArquivo' => $anexos['cNomeArquivo'],
-            'nId' => $anexos['nId'],
-            'nIdAnexo' => $anexos['nIdAnexo']
-        );
+        if (!empty($anexos['cNomeArquivo'])) {
+            $anexos_entry =  array(
+                'cNomeArquivo' => $anexos['cNomeArquivo'],
+                'nId' => $anexos['nId'],
+                'nIdAnexo' => $anexos['nIdAnexo']
+            );
+            $anexo[] = $anexos_entry;
+        }
     }
-    $anexo[] = $anexos_entry;
     return $anexo;
+
   }
   
 
