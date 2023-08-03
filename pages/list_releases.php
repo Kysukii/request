@@ -101,13 +101,14 @@
           </div>
           <div class="modal-body align-middle text-center">
             
-            <form method="POST" action="" multipart>
+            <form method="GET" action="../JSON/insert_doc.php" multipart>
               <legend class="fs-6">Enviar arquivos sem acentuação ou caracteres especiais.</legend>
               <div class="row">
                 <div class="col-7">
                   <input class="form-control" type="file" name="insert_anexo"/>
                 </div>
                 <div class="col-3">
+                  <input id="idOmie" class="form-control" type="text" name="idOmie"/>
                   <input class="form-control" type="text" name="docNumber" placeholder="Numero NF"/>
                 </div>
                 <div class="col-2">
@@ -130,8 +131,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
       </div>
@@ -168,12 +168,12 @@
 </script>
 
 <script> //Funções JS 
-  function chamaModal (fileNameJSON, codSupplier) {
+  function chamaModal (fileNameJSON, codOmie) {
     
     var modalElement = document.getElementById('AnexarItem');
     var modalInstance = new bootstrap.Modal(modalElement);
     const modalTitle = document.querySelector('#AnexarItem .modal-title');
-    modalTitle.textContent = "Lançamento número " + codSupplier;
+    modalTitle.textContent = "Lançamento número " + codOmie;
 
     var tabAnexos = $("#tabAnexos").find('tbody');
     tabAnexos.empty();
@@ -184,8 +184,7 @@
       tabAnexos.append(rowAnexo);
       console.log(anexo);
     });
-    
-
+    $('#idOmie').val(codOmie);
     modalInstance.show();
   }
   
@@ -236,6 +235,8 @@
     xhr.send(formData); // Envie o objeto FormData como dados da solicitação
   }
 
+
+
   function searchReleases() {
     var form = document.getElementById("search_releases"); // Obtenha o elemento do formulário pelo ID
     var formData = new FormData(form); // Crie um objeto FormData para enviar o formulário
@@ -275,10 +276,12 @@
               
               linha.append(
                 $("<td>").append(
-                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick='chamaModal(" + JSON.stringify(fileNameJSON) + ", " + lancamento['Codigo Cliente'] + ")'><i class='bi bi-file-earmark-arrow-up'></i></button>")
+                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick='chamaModal(" + JSON.stringify(fileNameJSON) + ", " + lancamento['id Omie'] + ")'><i class='bi bi-file-earmark-arrow-up'></i></button>")
                 )
               );
+              
               tabela.append(linha);
+              
             });
             
 
@@ -294,5 +297,6 @@
     xhr.send(formData); // Envie o objeto FormData como dados da solicitação
   }
 
+  
   
 </script>
