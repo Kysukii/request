@@ -168,12 +168,12 @@
 </script>
 
 <script> //Funções JS 
-  function chamaModal (fileNameJSON) {
+  function chamaModal (fileNameJSON, codSupplier) {
     
     var modalElement = document.getElementById('AnexarItem');
     var modalInstance = new bootstrap.Modal(modalElement);
     const modalTitle = document.querySelector('#AnexarItem .modal-title');
-    modalTitle.textContent = "Lançamento número " + "X";
+    modalTitle.textContent = "Lançamento número " + codSupplier;
 
     var tabAnexos = $("#tabAnexos").find('tbody');
     tabAnexos.empty();
@@ -254,6 +254,7 @@
             
             // Loop pelos lançamentos
             releases.forEach(function(lancamento) {
+              console.log(lancamento);
               var linha = $("<tr>");
               linha.append($("<td>").text(lancamento['Data Inc.']));
               linha.append($("<td>").text(lancamento['status']));
@@ -274,7 +275,7 @@
               
               linha.append(
                 $("<td>").append(
-                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick='chamaModal(" + JSON.stringify(fileNameJSON) +"', " '" + + "')'><i class='bi bi-file-earmark-arrow-up'></i></button>")
+                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick='chamaModal(" + JSON.stringify(fileNameJSON) + ", " + lancamento['Codigo Cliente'] + ")'><i class='bi bi-file-earmark-arrow-up'></i></button>")
                 )
               );
               tabela.append(linha);
