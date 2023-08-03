@@ -168,25 +168,29 @@
 </script>
 
 <script> //Funções JS 
-  function chamaModal (fileNameJSON) {
-    
-    var modalElement = document.getElementById('AnexarItem');
-    var modalInstance = new bootstrap.Modal(modalElement);
-    const modalTitle = document.querySelector('#AnexarItem .modal-title');
-    modalTitle.textContent = "Lançamento número " + "X";
+  function chamaModal(mTitle, nDoc, fileNameJSON) {
 
-    var tabAnexos = $("#tabAnexos").find('tbody');
-    tabAnexos.empty();
+    console.log(fileNameJSON);
+    // var modalElement = document.getElementById('AnexarItem');
+    // var modalInstance = new bootstrap.Modal(modalElement);
+    // const modalTitle = document.querySelector('#AnexarItem .modal-title');
+    // modalTitle.textContent = "Lançamento número " + mTitle;
     
-    fileNameJSON.forEach(function(anexo) {
-      var rowAnexo = $("<tr>");
-      rowAnexo.append($("<td>").text(anexo));
-      tabAnexos.append(rowAnexo);
-      console.log(anexo);
-    });
-    
+    // const fileName = JSON.parse(fileNameJSON);
+    // console.log(fileName);
 
-    modalInstance.show();
+    // var tabAnexos = $("#tabAnexos").find('tbody');
+    // tabAnexos.empty();
+    
+    // fileName.forEach(function(anexo) {
+    //   var rowAnexo = $("<tr>");
+    //   rowAnexo.append($("<td>").text(anexo));
+    //   tabAnexos.append(rowAnexo);
+    // });
+    
+   
+
+    //modalInstance.show();
   }
   
   function chamaToast(text) {
@@ -252,8 +256,10 @@
             var tabela = $("#tabelaLancamentos").find('tbody');
             tabela.empty();
             
+            console.log(releases[0]['anexos']);
             // Loop pelos lançamentos
             releases.forEach(function(lancamento) {
+
               var linha = $("<tr>");
               linha.append($("<td>").text(lancamento['Data Inc.']));
               linha.append($("<td>").text(lancamento['status']));
@@ -268,16 +274,18 @@
               }else {
                 linha.append($("<td>"));
               }
-              const fileNameJSON = lancamento['anexos'].map(function(anexo) {
+              
+              const fileNameJSON = JSON.stringify(lancamento['anexos'].map(function(anexo) {
                 return anexo['cNomeArquivo'];
-              });
+              }));
               
               linha.append(
                 $("<td>").append(
-                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick='chamaModal(" + JSON.stringify(fileNameJSON) +"', " '" + + "')'><i class='bi bi-file-earmark-arrow-up'></i></button>")
+                  $("<button type='button' class='btn btn-secondary btn-sm' title='Inserir Anexo' onclick=\"chamaModal('" + lancamento['id Omie'] + "', '" + lancamento['ndoc'] + "', " + fileNameJSON + ")\"><i class='bi bi-file-earmark-arrow-up'></i></button>")
                 )
               );
               tabela.append(linha);
+              console.log(fileNameJSON);
             });
             
 
