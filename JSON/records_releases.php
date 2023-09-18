@@ -57,6 +57,12 @@ if (isset($json['faultstring'])) {
         $supName = searchSupplier($supID);
         $projName = searchProject($projID);
         $Anexo = listAnexos($record['codigo_lancamento_omie']);
+        if (isset($record['numero_documento_fiscal'])) {
+            $numDoc = $record['numero_documento_fiscal'];
+        }else {
+            $numDoc = "";
+        }
+
         $entry = array(
             'Data Inc.' => $record['data_entrada'],
             'id Omie' => $record['codigo_lancamento_omie'],
@@ -66,12 +72,11 @@ if (isset($json['faultstring'])) {
             'Data Vencimento' => $record['data_vencimento'],
             'Data Previsao' => $record['data_previsao'],
             'Id Projeto' => @$record['codigo_projeto'],
-            'ndoc' => @$record['numero_documento_fiscal'],
+            'ndoc' => $numDoc,
             'status' => $record['status_titulo'],
             'valor total' => $record['valor_documento'],
 
         );
-
         foreach ($record['categorias'] as $category) {
             $category_entry = array(
                 'categoria' => $category['codigo_categoria'],
@@ -81,8 +86,13 @@ if (isset($json['faultstring'])) {
             $entry['categorias'][] = $category_entry; // Adicionamos a categoria ao array 'categorias'
         }
 
+        
         foreach ($Anexo as $cAnexos) {
-            $entry['anexos'][] = $cAnexos; // Adicionamos a categoria ao array 'categorias'
+            if (isset($cAnexos)) {
+                $entry['anexos'][] = $cAnexos;
+            }else {
+                $entry['anexos'][] = "Nenhum Anexo";
+            }
         }
 
         $data[] = $entry; // Adicionamos o lançamento ao array $data
@@ -189,6 +199,19 @@ function listAnexos($idOmie) {
 
     $json = json_decode($response, true);
     curl_close($ch);
+    const data = JSON.parse(responseText);
+    var toastContainer = document.querySelector('.toast-container');
+
+    // Cria um elemento de toast
+    var toast = document.createElement('div');
+    toast.classList.add('toast');
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    var toastBody = document.createElement('div');
+    toastBody.classList.add('toast-body');
+    var list = document.createElement('ul');
+    list.setAttribute('type' , 'circle');
 
     $anexo = array();
     foreach ($json['listaAnexos'] as $anexos) {
@@ -201,6 +224,23 @@ function listAnexos($idOmie) {
             $anexo[] = $anexos_entry;
         }
     }
+    
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        var listItem = document.createElement('li');
+        listItem.textContent = data[key];
+        list.appendChild(listItem);
+      }
+    }
+    toastBody.appendChild(list);
+    toast.appendChild(toastBody);
+    toastContainer.appendChild(toast);
+
+    var toastInstance = new bootstrap.Toast(toast);
+    toastInstance.show();
+    form.reset();
+
+    
     return $anexo;
 
   }

@@ -155,15 +155,8 @@
         </form>
       </div>
       
-      <!-- toast -->
-      <div class="toast position-fixed top-0 end-0 text-bg-primary border-0 fade" role="alert" aria-live="assertive" aria-atomic="true" STYLE="margin: 5em 4em;">
-        <div class="d-flex">
-          <div class="toast-body">
-            
-          </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-      </div>
+    <!-- toast -->
+      <div class="toast-container position-fixed top-0 end-0 p-3"></div>  
 
     </div>
 
@@ -175,12 +168,32 @@
 
 <script>
 
-  function chamaToast(text) {
-    const toast = document.querySelector('.toast');
-    var toastInstance = new bootstrap.Toast(toast);
-    $('.toast-body').html(text);
+  function chamaToast(message) {
+    const toastContainer = document.querySelector('.toast-container');
+    
+    const newToast = document.createElement('div');
+    newToast.className = 'toast';
+    
+    newToast.innerHTML = `
+      <div class="toast-header">
+        <strong class="me-auto">Mensagem</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">${message}</div>
+    `;
+    
+    toastContainer.appendChild(newToast);
+    
+    const toastInstance = new bootstrap.Toast(newToast);
     toastInstance.show();
   }
+
+  // impede o envio do formulario
+  $(document).on('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  });
 
 //SEARCH FORNECEDOR
 
@@ -283,20 +296,10 @@
     
   }
 
-
-
-// impede o envio do formulario
-  $(document).on('keydown', function(event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-    }
-  });
-
-
 // envia o formulario ao clicar no botao enviar
   $('#register_payment').on('submit', function(event) {
-    //if (event.originalEvent.submitter && event.originalEvent.submitter.id === 'sendFormBtn') {
-      //event.preventDefault();
+    if (event.originalEvent.submitter && event.originalEvent.submitter.id === 'sendFormBtn') {
+      event.preventDefault();
       $('#valorTotalParcela').removeAttr('disabled');
       $('#btnSendSpin').removeAttr("hidden");
       $('#sendFormBtn').attr('disabled', 'disabled');
@@ -305,13 +308,13 @@
         $('#dateIssue').attr('disabled', 'disabled');
       }
       setTimeout(function() {
-        //insertPayment();
+        insertPayment();
       }, 1500);
       
       
-    //} else {
-    //  return false;
-    //}
+    } else {
+     return false;
+    }
   });
 
 //AJAX para retornar JSON de pages/insert_payment
@@ -327,16 +330,35 @@
         if (responseText) {
           const data = JSON.parse(responseText);
 
+          var toastContainer = document.querySelector('.toast-container');
+
+          // Cria um elemento de toast
+          var toast = document.createElement('div');
+          toast.classList.add('toast');
+          toast.setAttribute('role', 'alert');
+          toast.setAttribute('aria-live', 'assertive');
+          toast.setAttribute('aria-atomic', 'true');
+          var toastBody = document.createElement('div');
+          toastBody.classList.add('toast-body');
+          var list = document.createElement('ul');
+          list.setAttribute('type' , 'circle');
+
           for (var key in data) {
-            const chave = key;
-            if (chave == 'faultstring') {
-              chamaToast(data[key]);
-            }else {
-              chamaToast(data[key]);
-              form.reset();
+            if (data.hasOwnProperty(key)) {
+              var listItem = document.createElement('li');
+              listItem.textContent = data[key];
+              list.appendChild(listItem);
             }
-            
           }
+
+          toastBody.appendChild(list);
+          toast.appendChild(toastBody);
+          toastContainer.appendChild(toast);
+
+          var toastInstance = new bootstrap.Toast(toast);
+          toastInstance.show();
+          form.reset();
+          
           $('#btnSendSpin').attr('hidden', 'hidden');
           $('#sendFormBtn').removeAttr('disabled');
           $('#btnSendName').html('Enviar');

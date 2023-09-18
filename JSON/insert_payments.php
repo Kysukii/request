@@ -15,6 +15,8 @@ $issueDate = isset($_POST['issueDate']) ? date('d/m/Y', strtotime($_POST['issueD
 $observation = isset($_POST['observation']) ? $_POST['observation'] : '';
 
 
+$expose = array();
+
 // Verifica se todas as variáveis estão definidas e não são nulas
 if ($supplier_name !== '' && $banks !== '' && $due_date !== '' && $project !== '' && $categorias !== '' && $valorCat !== '' && $requester !== '' && $TotalParcela !== '' && $observation !== '') {
   $app_key = '1742976590355';
@@ -72,106 +74,113 @@ if ($supplier_name !== '' && $banks !== '' && $due_date !== '' && $project !== '
         // Exibe o retorno da API
         if (isset($json['faultstring'])) {
           //header('Content-Type: application/json; charset=utf-8');
-          $response = array(
+          $expose = array_merge($expose, array(
             'faultstring' => $json['faultstring']
-          );
-          echo json_encode($response, JSON_UNESCAPED_UNICODE);
+          ));
         }else{
           $codomie = $json['codigo_lancamento_omie'];
-          $response = array(
-            'Status: ' => $json['descricao_status']
-          );
-          echo json_encode($response, JSON_UNESCAPED_UNICODE);
-
+          $expose = array_merge($expose, array(
+            'Status' => $json['descricao_status']
+          ));
   
         // INSERIR ANEXO AO LANCAMENTO
-          if(isset($_FILES['files']) && !empty($_FILES['files']['tmp_name'])) {
-            if (!$_FILES['files']['error'][0] > 0) {
-              $archiveName = $_FILES['files']['name'][0];
-              $caminhoTemporario = $_FILES['files']['tmp_name'][0];
-              $conteudoPDF = file_get_contents($caminhoTemporario);
-              $arquivo = base64_encode($conteudoPDF);
-              $md5Arq = md5($arquivo);
-              $url_anexo = 'https://app.omie.com.br/api/v1/geral/anexo/';
-
-              $zip = new ZipArchive;
-              if ($zip->open($caminhoTemporario) === true) {
-                for ($i = 0; $i < $zip->numFiles; $i++) {
-                  $filename = $zip->getNameIndex($i);
-                  // Define os parâmetros da solicitação
-                  $params_anexo = array(
-                    'call' => 'IncluirAnexo',
-                    'app_key' => $app_key,
-                    'app_secret' => $app_secret,
-                    'param' => array(
-                      array(
-                          "cCodIntAnexo" => "",
-                          "cTabela" => "conta-pagar",
-                          "nId" => $codomie,
-                          "cNomeArquivo" => $archiveName,
-                          "cTipoArquivo" => "",
-                          "cArquivo" => $arquivo,
-                          "cMd5" => $md5Arq
-                      )
+        if(isset($_FILES['files']) && !empty($_FILES['files']['tmp_name'])) {
+          if (!$_FILES['files']['error'][0]>0) {
+  
+            $caminhoTemporario = $_FILES['files']['tmp_name'][0];
+            $nomeArquivo = $_FILES['files']['name'];
+            $conteudoPDF = file_get_contents($caminhoTemporario);
+            $arquivo = base64_encode($conteudoPDF);
+            $md5Arq = md5($arquivo);
+            $url_anexo = 'https://app.omie.com.br/api/v1/geral/anexo/';
+  
+            $zip = new ZipArchive;
+            if ($zip->open($caminhoTemporario) === true) {
+              for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                // Define os parâmetros da solicitação
+                $params_anexo1 = array(
+                  'call' => 'IncluirAnexo',
+                  'app_key' => $app_key,
+                  'app_secret' => $app_secret,
+                  'param' => array(
+                    array(
+                        "cCodIntAnexo" => "",
+                        "cTabela" => "conta-pagar",
+                        "nId" => $codomie,
+                        "cNomeArquivo" => $filename,
+                        "cTipoArquivo" => "",
+                        "cArquivo" => $arquivo,
+                        "cMd5" => $md5Arq
                     )
-                  );
+                  )
+                );
+  
                 // Inicia a sessão cURL
-                  $ch = curl_init();
+                $ch = curl_init();
   
-                  // Configura as opções da requisição
-                  curl_setopt($ch, CURLOPT_URL, $url_anexo);
-                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-                  curl_setopt($ch, CURLOPT_POST, true);
-                  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params_anexo));
-                  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Ignora a verificação do certificado SSL
+                // Configura as opções da requisição
+                curl_setopt($ch, CURLOPT_URL, $url_anexo);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params_anexo1));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Ignora a verificação do certificado SSL
   
-                  // Executa a requisição e armazena a resposta
-                  $response = curl_exec($ch);
-                  $json =  json_decode($response, true);
-                  // Verifica se ocorreu algum erro durante a requisição
-                  if(curl_error($ch)) {
-                    echo 'Erro na requisição cURL: ' . curl_error($ch);
-                  }else {
-                    // Exibe o retorno da API
-                    if (isset($json['faultstring']) || isset($json['status']) == 'error') {
-                      $response = array(
-                        'faultstring' => $json['faultstring']
-                      );
-                      echo json_encode($response, JSON_UNESCAPED_UNICODE);
-                    }else{
+                // Executa a requisição e armazena a resposta
+                $response = curl_exec($ch);
+                $json =  json_decode($response, true);
+  
+                // Verifica se ocorreu algum erro durante a requisição
+                if(curl_error($ch)) {
+                  echo 'Erro na requisição cURL: ' . curl_error($ch);
+                }else {
+                  
+                  // Exibe o retorno da API
+                  if ($json['cCodStatus'] > 0) {
+                    $expose = array_merge($expose, array(
+                      'faultAnexo' => $json['cDesStatus']
+                    ));
+                    
+                  }else{
+                    
+                    $cNomeArquivo[] = $json['cNomeArquivo'];
+                    $cDesStatus[] = $json['cDesStatus'];
                       
-                      if (!$json['cCodStatus']) {
-                        $response = array(
-                          $json['cNomeArquivo'] => $json['cDesStatus']
-                        );
-                        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-                      }
-  
-                    }
                   }
-                } // fechamento do for ($i = 0; $i < $zip->numFiles; $i++)
-              }
+                }
+              } // fechamento do for ($i = 0; $i < $zip->numFiles; $i++)
+              $expose['cNomeArquivo'] = $cNomeArquivo;
+              $expose['cDesStatus'] = $cDesStatus;
             }else {
-              echo "Erro ao enviar o arquivo. Código de erro: " . $_FILES['files']['error'][0];
+              $expose = array_merge($expose, array(
+                'error' => 'Arquivo não foi lido corretamente.'
+              ));
             }
-    
-          }else{
-            echo "Erro ao enviar o anexo.";
+          }else {
+              $expose = array_merge($expose, array(
+                  'error' => 'Nenhum arquivo encontrado.'
+              ));
           }
+        }else{
+            $expose = array_merge($expose, array(
+                'error' => 'Nenhum anexo enviado.'
+            ));
+        }
   
         }
     }
 } else {
   
     // Alguma(s) variável(eis) não possui(em) valor
-    $response = array(
+    $expose = array(
       'faultstring' => 'Os campos obrigatórios não foram preenchidos corretamente.'
     );
 
-    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    echo json_encode($expose, JSON_UNESCAPED_UNICODE);
 }
 
+echo json_encode($expose, JSON_UNESCAPED_UNICODE);
 
 
 ?>

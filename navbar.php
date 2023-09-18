@@ -5,11 +5,13 @@ if ($_SERVER['REQUEST_URI'] == "/request-1/index.php") {
   $op = "pages/payments_register.php";
   $rs = "pages/register_supplier.php";
   $lc = "pages/list_releases.php";
+  $art = "pages/register_art.php";
 }else {
   $home = "../index.php";
   $op = "payments_register.php";
   $rs = "register_supplier.php";
   $lc = "list_releases.php";
+  $art = "register_art.php";
 }
 
 ?>
@@ -37,6 +39,7 @@ if ($_SERVER['REQUEST_URI'] == "/request-1/index.php") {
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="'.$op.'">Ordem Pagamento</a></li>
+                <li><a class="dropdown-item" href="'.$art.'">Enviar ART</a></li>
                 <li><a class="dropdown-item" href="'.$rs.'">Cadastrar Fornecedor</a></li>
               </ul>
             </li>
