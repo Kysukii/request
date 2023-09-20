@@ -13,15 +13,16 @@
   ?>
 
     <div class="container my-5">
-      <h1>marlon!</h1>
+      <h1>Lançamentos Financeiros</h1>
       <div class="col-lg-8 px-0">
-        <p class="fs-5">You've successfully loaded up the Bootstrap starter example. It includes <a href="https://getbootstrap.com/">Bootstrap 5</a> via the <a href="https://www.jsdelivr.com/package/npm/bootstrap">jsDelivr CDN</a> and includes an additional CSS and JS file for your own code.</p>
-        <p>Feel free to download or copy-and-paste any parts of this example.</p>
-
-        <hr class="col-1 my-4">
-
-        <a href="https://getbootstrap.com" class="btn btn-primary">Read the Bootstrap docs</a>
-        <a href="https://github.com/twbs/examples" class="btn btn-secondary">View on GitHub</a>
+        <p class="fs-5">Simplificando a Gestão Financeira</p>
+        <p>Esta página é a sua ferramenta central para registrar e monitorar todas as compras e pagamentos feitas pela Getpower.</p>
+        <ul>
+          <li><strong>Controle Total:</strong> Mantenha o controle completo as despesas, registrando todos os gastos de forma organizada.</li>
+          <li><strong>Transparência:</strong> Garanta transparência em todas as transações, permitindo que todos os envolvidos tenham acesso às informações financeiras necessárias.</li>
+          <li><strong>Conformidade Fiscal:</strong> Cumpra com todas as obrigações fiscais, armazenando as notas fiscais de maneira segura e acessível.</li>
+        </ul>
+        <p>Nossa plataforma simplifica o processo de lançamento de despesas e facilita a gestão financeira.</p>
       </div>
     </div>
 

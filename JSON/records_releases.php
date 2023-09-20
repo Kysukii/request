@@ -199,19 +199,6 @@ function listAnexos($idOmie) {
 
     $json = json_decode($response, true);
     curl_close($ch);
-    const data = JSON.parse(responseText);
-    var toastContainer = document.querySelector('.toast-container');
-
-    // Cria um elemento de toast
-    var toast = document.createElement('div');
-    toast.classList.add('toast');
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
-    var toastBody = document.createElement('div');
-    toastBody.classList.add('toast-body');
-    var list = document.createElement('ul');
-    list.setAttribute('type' , 'circle');
 
     $anexo = array();
     foreach ($json['listaAnexos'] as $anexos) {
@@ -224,21 +211,6 @@ function listAnexos($idOmie) {
             $anexo[] = $anexos_entry;
         }
     }
-    
-    for (var key in data) {
-      if (data.hasOwnProperty(key)) {
-        var listItem = document.createElement('li');
-        listItem.textContent = data[key];
-        list.appendChild(listItem);
-      }
-    }
-    toastBody.appendChild(list);
-    toast.appendChild(toastBody);
-    toastContainer.appendChild(toast);
-
-    var toastInstance = new bootstrap.Toast(toast);
-    toastInstance.show();
-    form.reset();
 
     
     return $anexo;

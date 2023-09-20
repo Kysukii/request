@@ -147,7 +147,7 @@
             <form id="fExluirLnc" method="POST" action="../JSON/excluir_lancamento.php">
               <div class="row">
                 <div class="col-3">
-                  <input id="idOmieExc" class="form-control" type="text" name="idOmieExc" />
+                  <input id="idOmieExc" class="form-control" type="text" name="idOmieExc" disabled/>
                 </div>
                 <div class="col-5">
                   <input id="FornName" class="form-control" type="text" name="fornName" disabled/>
@@ -421,8 +421,6 @@
       $('#fExluirLnc').submit(function(event) {
         event.preventDefault();
         
-        
-
         var form = document.getElementById("fExluirLnc"); 
         var formData = new FormData(form);
 
@@ -444,16 +442,18 @@
                   messages.push(data[key]);
                 } else {
                   messages.push(data[key]);
-                  
                 }
               }
               $('.modal-content .modal-body').html(messages);
+
+              setTimeout(function () {
+                location.reload();
+              }, 1000);
             } else {
               console.log(responseText);
               $('.modal-content .modal-body').html("Erro na Exclusão.");
             }
           }
-
         };
         xhr.send(formData);
      
@@ -466,7 +466,6 @@
       searchSupplier();
     });
 
-  
 
     $(document).on('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -478,9 +477,9 @@
       if (event.originalEvent.submitter && event.originalEvent.submitter.id === 'sendFormBtn') {
         event.preventDefault();
         getAnexo();
-      } else {
-       return false;
-      }
+        var form = document.getElementById("formAnexo"); 
+        form.reset();
+      } 
     });
   
   
